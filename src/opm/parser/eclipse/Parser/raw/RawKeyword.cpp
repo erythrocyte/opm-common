@@ -43,7 +43,8 @@ namespace {
 }
 
 
-    RawKeyword::RawKeyword(const std::string& name, const std::string& filename, std::size_t lineNR, bool raw_string, Raw::KeywordSizeEnum sizeType, const std::optional<std::size_t>& min_size, std::size_t size_arg)
+    RawKeyword::RawKeyword(const std::string& name, const std::string& filename, std::size_t lineNR, bool raw_string, 
+    Raw::KeywordSizeEnum sizeType, const std::optional<std::size_t>& min_size, std::size_t size_arg)
         : m_name(keyword_name(name))
         , m_location(name, filename, lineNR)
         , raw_string_keyword(raw_string)

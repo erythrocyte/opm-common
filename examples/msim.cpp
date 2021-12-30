@@ -17,42 +17,52 @@
   along with OPM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <iostream>
+
 #include <opm/output/eclipse/EclipseIO.hpp>
 
-#include <opm/parser/eclipse/Parser/Parser.hpp>
-#include <opm/parser/eclipse/Parser/ParseContext.hpp>
 #include <opm/parser/eclipse/Parser/ErrorGuard.hpp>
+#include <opm/parser/eclipse/Parser/ParseContext.hpp>
+#include <opm/parser/eclipse/Parser/Parser.hpp>
 
-#include <opm/parser/eclipse/Python/Python.hpp>
+#include <opm/common/OpmLog/OpmLog.hpp>
 #include <opm/parser/eclipse/EclipseState/EclipseState.hpp>
 #include <opm/parser/eclipse/EclipseState/Schedule/Schedule.hpp>
 #include <opm/parser/eclipse/EclipseState/SummaryConfig/SummaryConfig.hpp>
-#include <opm/common/OpmLog/OpmLog.hpp>
+#include <opm/parser/eclipse/Python/Python.hpp>
 
 #include <opm/msim/msim.hpp>
 
 
-int main(int /* argc */, char** argv) {
-    std::string deck_file = argv[1];
+int
+main(int /* argc */, char** argv)
+{
+    // std::string deck_file = "../../opm-common/tests/SPE1CASE1.DATA"; // argv[1];
+    std::string deck_file = "/home/erythrocyte/Documents/progs/cpp/opm-common/tests/SPE1CASE1.DATA";
     Opm::Parser parser;
     Opm::ParseContext parse_context;
     Opm::ErrorGuard error_guard;
     auto python = std::make_shared<Opm::Python>();
 
     Opm::OpmLog::setupSimpleDefaultLogging();
-    Opm::Deck deck = parser.parseFile(deck_file, parse_context, error_guard);
-    Opm::EclipseState state(deck);
-    Opm::Schedule schedule(deck, state, parse_context, error_guard, python);
-    Opm::SummaryConfig summary_config(deck, schedule, state.fieldProps(), state.aquifer(),
-                                      parse_context, error_guard);
+    std::vector<Opm::Ecl::SectionType> sections;
+    sections.push_back(Opm::Ecl::SectionType::PROPS);
+    Opm::Deck deck = parser.parseFile(deck_file, parse_context, error_guard, sections);
 
-    if (error_guard) {
-        error_guard.dump();
-        error_guard.terminate();
-    }
+    std::cout << "completed" << std::endl;
+    // Opm::EclipseState state(deck);
+    // Opm::Schedule schedule(deck, state, parse_context, error_guard, python);
+    // Opm::SummaryConfig summary_config(deck, schedule, state.fieldProps(), state.aquifer(),
+    //                                   parse_context, error_guard);
 
-    Opm::msim msim(state);
-    Opm::EclipseIO io(state, state.getInputGrid(), schedule, summary_config);
-    msim.run(schedule, io, false);
+    // if (error_guard) {
+    //     error_guard.dump();
+    //     error_guard.terminate();
+    // }
+
+    // Opm::msim msim(state);
+    // Opm::EclipseIO io(state, state.getInputGrid(), schedule, summary_config);
+    // msim.run(schedule, io, false);
+
+    return 0;
 }
-
